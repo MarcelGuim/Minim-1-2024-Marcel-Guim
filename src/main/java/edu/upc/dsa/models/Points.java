@@ -10,28 +10,24 @@ public class Points {
     String id;
     double horizontal;
     double vertical;
-    String type;
-    List<User> userList;
+    ElementType type;
 
 
     public Points() {
         this.setId(RandomUtils.getId());
     }
-    public Points(double horizontal, double vertical, String type) throws WrongTypeException {this(null, horizontal,vertical,type);
+    public Points(double horizontal, double vertical, ElementType type) throws WrongTypeException {this(null, horizontal,vertical,type);
     }
 
-    public Points(String id,double horizontal, double vertical, String type) throws WrongTypeException {
+    public Points(String id,double horizontal, double vertical, ElementType type) throws WrongTypeException {
         this();
-        if(type.equals("DOOR") ||type.equals("WALL") ||type.equals("BRIDGE") ||type.equals("POTION") ||type.equals("SWORD") ||type.equals("COIN") ||type.equals("GRASS") ||type.equals("TREE")){
-            this.setType(type);
-            if (id != null) this.setId(id);
-            this.setHorizontal(horizontal);
-            this.setVertical(vertical);
-            userList = new ArrayList<>();
-        }
-        else {
-            throw new WrongTypeException();
-        }
+        if (id != null) this.setId(id);
+        this.setHorizontal(horizontal);
+        this.setVertical(vertical);
+        this.setType(type);
+    }
+    public void setRandomId(){
+        this.setId(RandomUtils.getId());
     }
 
     public String getId() {
@@ -58,23 +54,12 @@ public class Points {
         this.vertical = vertical;
     }
 
-    public String getType() {
+    public ElementType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ElementType type) {
         this.type = type;
-    }
-
-    public List<User> getUserList() {
-        return userList;
-    }
-
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
-    }
-    public void addUser(User u){
-        this.userList.add(u);
     }
 
     @Override

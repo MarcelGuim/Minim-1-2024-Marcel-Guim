@@ -13,7 +13,6 @@ public class User {
     String surname;
     String mail;
     LocalDate date;
-    List<Points> points;
     static int lastId;
 
     public User() {
@@ -29,8 +28,9 @@ public class User {
         this.setSurname(surname);
         this.setMail(mail);
         this.setDate(date);
-        points = new ArrayList<>();
-
+    }
+    public void setRandomId(){
+        this.setId(RandomUtils.getId());
     }
 
     public String getId() {
@@ -71,17 +71,6 @@ public class User {
 
     public void setDate(LocalDate date) {
         this.date = date;
-    }
-
-    public List<Points> getPoints() {
-        return points;
-    }
-
-    public void setPoints(List<Points> points) {
-        this.points = points;
-    }
-    public void addPoint(Points p){
-        this.points.add(p);
     }
 
     @Override

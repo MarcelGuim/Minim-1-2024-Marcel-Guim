@@ -1,4 +1,5 @@
 package edu.upc.dsa.models;
 
-public class ElementType {
+public enum ElementType {
+    DOOR, WALL, BRIDGE, POTION, SWORD, COIN, GRASS, TREE;
 }

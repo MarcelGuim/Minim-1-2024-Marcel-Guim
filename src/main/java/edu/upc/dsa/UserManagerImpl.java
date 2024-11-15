@@ -1,6 +1,7 @@
 package edu.upc.dsa;
 
 import edu.upc.dsa.exceptions.*;
+import edu.upc.dsa.models.ElementType;
 import edu.upc.dsa.models.Points;
 import edu.upc.dsa.models.User;
 import org.apache.log4j.Logger;
@@ -13,11 +14,15 @@ public class UserManagerImpl implements UserManager{
     private static UserManager instance;
     protected HashMap<String,User> users;
     protected List<Points> points;
+    protected HashMap<String,List<Points>> pointsOfUser;
+    protected HashMap<String,List<User>> usersOfPoint;
     final static Logger logger = Logger.getLogger(UserManagerImpl.class);
 
     private UserManagerImpl() {
         this.points = new LinkedList<>();
         this.users = new HashMap<>();
+        this.usersOfPoint = new HashMap<>();
+        this.pointsOfUser = new HashMap<>();
     }
 
     public static UserManager getInstance() {
@@ -40,6 +45,7 @@ public class UserManagerImpl implements UserManager{
             else{
                 logger.info("new User " + user);
                 this.users.put(user.getMail(),user);
+                this.pointsOfUser.put(user.getMail(),new ArrayList<>());
                 logger.info("new user added");
                 return user;
             }
@@ -49,7 +55,7 @@ public class UserManagerImpl implements UserManager{
         }
     };
 
-    public Points addPoint(String id, double horizontal, double vertical, String type){
+    public Points addPoint(String id, double horizontal, double vertical, ElementType type){
         try{
             return this.addPoint(new Points(id, horizontal,vertical,type));
         }
@@ -59,12 +65,13 @@ public class UserManagerImpl implements UserManager{
         }
 
     };
-    public Points addPoint(double horizontal, double vertical, String type){
+    public Points addPoint(double horizontal, double vertical, ElementType type){
         return this.addPoint(null, horizontal, vertical, type);
     };
     public Points addPoint(Points point){
         logger.info("new Point " + point);
         this.points.add(point);
+        this.usersOfPoint.put(point.getId(),new ArrayList<>());
         logger.info("new Point added");
         return point;
     };
@@ -128,26 +135,39 @@ public class UserManagerImpl implements UserManager{
         Points p = this.getPointByCoords(horizontal,vertical);
         logger.info("register new point "+p+" to user "+u);
         if (u!= null && p!= null){
-            u.addPoint(p);
-            p.addUser(u);
+            this.pointsOfUser.get(u.getMail()).add(p);
+            this.usersOfPoint.get(p.getId()).add(u);
             logger.info("Point=" +p+ "added to user= "+u);
             return true;
         }
         else{
+            logger.warn("Attention, wrong id="+id+", or wrong coords");
             return false;
         }
     };
     public List<Points> GetListOfPointsUser(String id){
         User u = this.getUser(id);
-        logger.info("get points of user= "+u);
-        return u.getPoints();
+        if(u!= null){
+            logger.info("get points of user= "+u);
+            return pointsOfUser.get(this.getUser(id).getMail());
+        }
+        else{
+            logger.warn("User with id= " +id+", not found");
+            return null;
+        }
     };
     public List<User> GetListUsersOfPoint(double horizontal, double vertical){
         Points p = this.getPointByCoords(horizontal,vertical);
-        logger.info("get users of point= "+p);
-        return p.getUserList();
+        if(p!= null){
+            logger.info("get user of points= "+p);
+            return usersOfPoint.get(p.getId());
+        }
+        else{
+            logger.warn("Point with coords= " +horizontal+", "+vertical+" not found");
+            return null;
+        }
     };
-    public List<Points> GetPointsOfType(String type){
+    public List<Points> GetPointsOfType(ElementType type){
         logger.info("Get points of type ="+type);
         try{
             List<Points> answer = new ArrayList<>();

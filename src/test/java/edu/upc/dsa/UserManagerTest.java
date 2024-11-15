@@ -1,6 +1,7 @@
 package edu.upc.dsa;
 
 import edu.upc.dsa.exceptions.*;
+import edu.upc.dsa.models.ElementType;
 import edu.upc.dsa.models.User;
 import edu.upc.dsa.models.Points;
 import org.junit.After;
@@ -27,9 +28,9 @@ public class UserManagerTest {
         this.Um.addUser("Marcel", "Guim", "Marcel", date1);
         this.Um.addUser("Manel", "Alehop", "Manel", date2);
         this.Um.addUser("Samuel", "Guim", "Samuel", date3);
-        this.Um.addPoint(10,10,"DOOR");
-        this.Um.addPoint(20,20,"WALL");
-        this.Um.addPoint(20,10,"BRIDGE");
+        this.Um.addPoint(10,10, ElementType.DOOR);
+        this.Um.addPoint(20,20,ElementType.WALL);
+        this.Um.addPoint(20,10,ElementType.BRIDGE);
     }
 
     @After
@@ -60,23 +61,15 @@ public class UserManagerTest {
         this.Um.addUser(user1);
         this.Um.RegisterInterestPoint(user1.getId(), 10,10);
         Assert.assertEquals(1, Um.GetListOfPointsUser(user1.getId()).size());
-        Assert.assertEquals(1,Um.getPointByCoords(10,10).getUserList().size());
-    }
-
-
-    @Test
-    public void TryWrongTypeTest(){
-        Assert.assertEquals(3, Um.sizePoints());
-        this.Um.addPoint(50,50,"TABLE");
-        Assert.assertEquals(3, Um.sizePoints());
+        Assert.assertEquals(1,Um.GetListUsersOfPoint(10,10).size());
     }
 
     @Test
     public void FindPointsByTypeTest(){
         try{
-            Points p1 = new Points(250,431,"SWORD");
+            Points p1 = new Points(250,431,ElementType.SWORD);
             this.Um.addPoint(p1);
-            Points p2 = this.Um.GetPointsOfType("SWORD").get(0);
+            Points p2 = this.Um.GetPointsOfType(ElementType.SWORD).get(0);
             Assert.assertSame(p1,p2);
         }
         catch(WrongTypeException ex){
